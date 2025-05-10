@@ -7,6 +7,7 @@ Write-Host "`n============================="
 Write-Host "🐍 Installing Python..."
 Write-Host "============================="
 winget install 9PNRBTZXMB4Z
+pip install PyQt5
 $v = Split-Path (Get-Command python).Source
 Write-Host "✅ Python installed in: $v"
 
