@@ -6,8 +6,15 @@ winget install --id Microsoft.Powershell --source winget --accept-package-agreem
 Write-Host "`n============================="
 Write-Host "🐍 Installing Python..."
 Write-Host "============================="
-Start-Process -Wait -FilePath "D:\Downloads\python-3.12.3-amd64.exe" -ArgumentList `
-"/quiet", "InstallAllUsers=1", "TargetDir=C:\Python", "PrependPath=1"
+
+$installDir = "C:\Python"
+New-Item -ItemType Directory -Force -Path $installDir | Out-Null
+$pythonInstallerUrl = "https://www.python.org/ftp/python/3.14.0/python-3.14.0b1.exe"
+$installerPath = "$env:TEMP\python-installer.exe"
+Invoke-WebRequest -Uri $pythonInstallerUrl -OutFile $installerPath
+Start-Process -FilePath $installerPath -ArgumentList "/quiet InstallAllUsers=1 TargetDir=$installDir PrependPath=1" -Wait
+Remove-Item $installerPath
+& "$installDir\python.exe" --version
 
 
 $v = Split-Path (Get-Command python).Source
