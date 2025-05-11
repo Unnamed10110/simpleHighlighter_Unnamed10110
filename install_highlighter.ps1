@@ -6,8 +6,9 @@ winget install --id Microsoft.Powershell --source winget --accept-package-agreem
 Write-Host "`n============================="
 Write-Host "🐍 Installing Python..."
 Write-Host "============================="
-winget install Python.Python.3
-pip install PyQt5
+Start-Process -Wait -FilePath python-3.x.x-amd64.exe -ArgumentList `
+    "/quiet", "InstallAllUsers=1", "TargetDir=C:\Python"
+
 $v = Split-Path (Get-Command python).Source
 Write-Host "✅ Python installed in: $v"
 
@@ -58,7 +59,7 @@ Write-Host "✅ AHK script created at: $ahkFile"
 Write-Host "`n============================="
 Write-Host "🔗 Associating .ahk files with AutoHotkey v2..."
 Write-Host "============================="
-$ahk2Path = "C:\Program Files\AutoHotkey\AutoHotkey.exe"
+$ahk2Path = "C:\Users\$env:USERNAME\AppData\Local\Programs\AutoHotkey\v2\AutoHotkey64.exe"
 cmd.exe /c "assoc .ahk=AutoHotkeyScript"
 cmd.exe /c "ftype AutoHotkeyScript=""$ahk2Path"" ""%1"""
 Write-Host "✅ .ahk association complete."
