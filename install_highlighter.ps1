@@ -6,7 +6,7 @@ winget install --id Microsoft.Powershell --source winget --accept-package-agreem
 Write-Host "`n============================="
 Write-Host "🐍 Installing Python..."
 Write-Host "============================="
-winget install 9PNRBTZXMB4Z
+winget install Python.Python.3
 pip install PyQt5
 $v = Split-Path (Get-Command python).Source
 Write-Host "✅ Python installed in: $v"
@@ -15,10 +15,7 @@ Write-Host "`n============================="
 Write-Host "⚙️ Installing AutoHotkey v2..."
 Write-Host "============================="
 $ahkUrl = "https://www.autohotkey.com/download/ahk-install.exe"
-$installer = "$env:TEMP\ahk-install.exe"
-Invoke-WebRequest -Uri $ahkUrl -OutFile $installer
-Start-Process -FilePath $installer -ArgumentList "/silent" -Wait
-Remove-Item $installer
+winget install AutoHotkey.AutoHotkey
 Write-Host "✅ AutoHotkey v2 installation completed."
 
 Write-Host "`n============================="
@@ -61,7 +58,7 @@ Write-Host "✅ AHK script created at: $ahkFile"
 Write-Host "`n============================="
 Write-Host "🔗 Associating .ahk files with AutoHotkey v2..."
 Write-Host "============================="
-$ahk2Path = "C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe"
+$ahk2Path = "C:\Program Files\AutoHotkey\AutoHotkey.exe"
 cmd.exe /c "assoc .ahk=AutoHotkeyScript"
 cmd.exe /c "ftype AutoHotkeyScript=""$ahk2Path"" ""%1"""
 Write-Host "✅ .ahk association complete."

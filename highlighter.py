@@ -29,20 +29,16 @@ class FlameshotOverlay(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
-        # Step 1: Dim the entire screen
         painter.fillRect(self.rect(), QColor(0, 0, 0, 100))
 
-        # Step 2: "Clear" each rectangle area to show screen behind
         painter.setCompositionMode(QPainter.CompositionMode_Clear)
         for rect in self.rectangles:
             painter.fillRect(rect, Qt.transparent)
 
-        # Live preview rectangle
         if self.start_point and self.end_point:
             live_rect = QRect(self.start_point, self.end_point).normalized()
             painter.fillRect(live_rect, Qt.transparent)
 
-        # Step 3: Draw green outlines on top
         painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
         pen = QPen(QColor(0, 255, 0), 2)
         painter.setPen(pen)
@@ -75,7 +71,7 @@ class FlameshotOverlay(QWidget):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
-            QApplication.quit()  # Close the application fully
+            QApplication.quit()
         elif event.key() == Qt.Key_Z and (event.modifiers() & Qt.ControlModifier):
             if self.rectangles:
                 self.rectangles.pop()
