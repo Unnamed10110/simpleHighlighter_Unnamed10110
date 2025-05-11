@@ -32,9 +32,9 @@ iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercont
 
 
 **Usage**:
-![Demo](https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/blob/master/usage_animation.gif)
-
 After installing, when you want to highlight a part of the screen press ctrl + Numpad7, then you can select multiple sreen regions. Press ctrl + z to undo or  Esc to quit .
+
+![Demo](https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/blob/master/usage_animation.gif)
 
 
 **Dependencies:**
