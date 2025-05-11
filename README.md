@@ -39,6 +39,7 @@ After installing, when you want to highlight a part of the screen press ctrl + N
 
 
 * . PWSH
+* . Winget
 * . Python
 * . PyQt5
 * . Autho Hotkey V2
