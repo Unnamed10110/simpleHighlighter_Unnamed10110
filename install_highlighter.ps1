@@ -6,8 +6,9 @@ winget install --id Microsoft.Powershell --source winget --accept-package-agreem
 Write-Host "`n============================="
 Write-Host "🐍 Installing Python..."
 Write-Host "============================="
-Start-Process -Wait -FilePath python-3.x.x-amd64.exe -ArgumentList `
-    "/quiet", "InstallAllUsers=1", "TargetDir=C:\Python"
+Start-Process -Wait -FilePath "D:\Downloads\python-3.12.3-amd64.exe" -ArgumentList `
+"/quiet", "InstallAllUsers=1", "TargetDir=C:\Python", "PrependPath=1"
+
 
 $v = Split-Path (Get-Command python).Source
 Write-Host "✅ Python installed in: $v"
