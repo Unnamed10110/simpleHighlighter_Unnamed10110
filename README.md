@@ -43,4 +43,4 @@ After installing, when you want to highlight a part of the screen press ctrl + N
 * . PyQt5
 * . Autho Hotkey V2
 
-  . This install createas a .ahk file that you can configure however you want to with other shortcuts, it is a very powerfull tool.
+  . You should run the created file run_highlighter.ahk everytime the computer restarts or add it to the startup to make it run automatically at startup (win + r and, type: shell:startup + enter, paste a shortcut to the run_highlighter.ahk file).
