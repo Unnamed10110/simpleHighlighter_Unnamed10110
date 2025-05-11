@@ -9,12 +9,14 @@ Write-Host "============================="
 
 $installDir = "C:\Python"
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-$pythonInstallerUrl = "https://www.python.org/ftp/python/3.14.0/python-3.14.0b1.exe"
+$pythonVersion = "3.12.3"
+$pythonInstallerUrl = "https://www.python.org/ftp/python/$pythonVersion/python-$pythonVersion-amd64.exe"
 $installerPath = "$env:TEMP\python-installer.exe"
 Invoke-WebRequest -Uri $pythonInstallerUrl -OutFile $installerPath
-Start-Process -FilePath $installerPath -ArgumentList "/quiet InstallAllUsers=1 TargetDir=$installDir PrependPath=1" -Wait
+Start-Process -FilePath $installerPath -ArgumentList "/quiet InstallAllUsers=1 TargetDir=`"$installDir`" Include_launcher=0 PrependPath=1" -Wait
 Remove-Item $installerPath
 & "$installDir\python.exe" --version
+
 
 
 $v = Split-Path (Get-Command python).Source
@@ -56,7 +58,7 @@ $ahkFile = Join-Path $aux "run_highlighter.ahk"
 $ahkContent = @"
 ^Numpad7::
 {
-    pythonPath := "$v\\pythonw.exe"
+    pythonPath := "$v\pythonw.exe"
     scriptPath := "$scriptPath"
     Run pythonPath ' "' scriptPath '"'
 }
