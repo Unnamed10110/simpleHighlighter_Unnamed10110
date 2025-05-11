@@ -7,20 +7,12 @@ Write-Host "`n============================="
 Write-Host "🐍 Installing Python..."
 Write-Host "============================="
 
-$installDir = "C:\Python"
-New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-$pythonVersion = "3.12.3"
-$pythonInstallerUrl = "https://www.python.org/ftp/python/$pythonVersion/python-$pythonVersion-amd64.exe"
-$installerPath = "$env:TEMP\python-installer.exe"
-Invoke-WebRequest -Uri $pythonInstallerUrl -OutFile $installerPath
-Start-Process -FilePath $installerPath -ArgumentList "/quiet InstallAllUsers=1 TargetDir=`"$installDir`" Include_launcher=0 PrependPath=1" -Wait
-Remove-Item $installerPath
-& "$installDir\python.exe" --version
-
-
-
+winget install 9PNRBTZXMB4Z
+pip install PyQt5
 $v = Split-Path (Get-Command python).Source
 Write-Host "✅ Python installed in: $v"
+
+
 
 Write-Host "`n============================="
 Write-Host "⚙️ Installing AutoHotkey v2..."
@@ -69,7 +61,7 @@ Write-Host "✅ AHK script created at: $ahkFile"
 Write-Host "`n============================="
 Write-Host "🔗 Associating .ahk files with AutoHotkey v2..."
 Write-Host "============================="
-$ahk2Path = "C:\Users\$env:USERNAME\AppData\Local\Programs\AutoHotkey\v2\AutoHotkey64.exe"
+$ahk2Path = "C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe"
 cmd.exe /c "assoc .ahk=AutoHotkeyScript"
 cmd.exe /c "ftype AutoHotkeyScript=""$ahk2Path"" ""%1"""
 Write-Host "✅ .ahk association complete."
