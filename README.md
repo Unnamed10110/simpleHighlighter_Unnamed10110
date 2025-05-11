@@ -42,3 +42,5 @@ After installing, when you want to highlight a part of the screen press ctrl + N
 * . Python
 * . PyQt5
 * . Autho Hotkey V2
+
+  . This install createas a .ahk file that you can configure however you want to with other shortcuts, it is a very powerfull tool.
