@@ -112,8 +112,10 @@ MIT — Free for personal or commercial use. Contributions welcome!
 ---
 
 ## 🙌 Credits
+
 Original idea and interaction model from Flameshot (Linux)
-Tray icon, development and packaging by [Unnamed10110]([https://example.com](https://github.com/Unnamed10110))
+
+Tray icon, development and packaging by [Unnamed10110](https://github.com/Unnamed10110)
 
 
 
