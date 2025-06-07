@@ -32,6 +32,7 @@ class TriggerSignals(QObject):
     show_overlay = pyqtSignal()
     hide_overlay = pyqtSignal()
 
+
 class FlameshotOverlay(QWidget):
     def __init__(self, trigger_signals):
         super().__init__()
@@ -54,6 +55,7 @@ class FlameshotOverlay(QWidget):
         self.start_point = None
         self.end_point = None
         self.show()
+        self.installEventFilter(self)  # Enable keypress detection
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -98,9 +100,21 @@ class FlameshotOverlay(QWidget):
             self.end_point = None
             self.update()
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.trigger.hide_overlay.emit()
+    def undo_last_rectangle(self):
+        if self.rectangles:
+            self.rectangles.pop()
+            self.update()
+
+    def eventFilter(self, obj, event):
+        if event.type() == event.KeyPress:
+            if event.key() == Qt.Key_Escape:
+                self.trigger.hide_overlay.emit()
+                return True
+            elif event.modifiers() == Qt.ControlModifier and event.key() == Qt.Key_Z:
+                self.undo_last_rectangle()
+                return True
+        return super().eventFilter(obj, event)
+
 
 class TrayApp:
     def __init__(self):
@@ -109,13 +123,10 @@ class TrayApp:
         self.overlay = FlameshotOverlay(self.signals)
 
         self.tray = QSystemTrayIcon()
-
-        # Set tray icon to green dot
         icon = generate_green_dot_icon()
         self.tray.setIcon(icon)
         self.tray.setToolTip("Screen Highlighter")
 
-        # Tray menu
         menu = QMenu()
         quit_action = QAction("Quit")
         quit_action.triggered.connect(self.quit_app)
@@ -133,7 +144,7 @@ class TrayApp:
         try:
             keyboard.add_hotkey("ctrl+num 7", lambda: self.signals.show_overlay.emit())
         except Exception as e:
-            print("Hotkey failed:", e)
+            print("Hotkey registration failed:", e)
 
     def quit_app(self):
         keyboard.unhook_all_hotkeys()
