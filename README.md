@@ -1,55 +1,117 @@
-<!-----
+<blockquote>
+<strong>🟢 Hello there:</strong> This used to be a simple python program running in the console, and activated via auto hotkey to run it which made it really slow. Now it is a fully functional background service much faster and easier to set up.
+Do not worry about the .exe change, you can see the source code, and even the code that generates the .exe (it's al there).
 
+Any suggestion is much appreciated
 
+</blockquote>
 
-Conversion time: 0.219 seconds.
+# 🔍 Simple Screen Region Highlighter (Windows Tray Service)
 
+This is a fast, lightweight **screen highlighter overlay** for Windows, inspired by [Flameshot](https://github.com/flameshot-org/flameshot). It runs silently in the background, is triggered via a hotkey, and allows you to draw green transparent rectangles on the screen for visual focus or annotation.
 
-Using this Markdown file:
+---
 
-1. Paste this output into your source file.
-2. See the notes and action items below regarding this conversion run.
-3. Check the rendered output (headings, lists, code blocks, tables) for proper
-   formatting and use a linkchecker before you publish this page.
+## 🕰️ Previous Version (Slower Startup)
 
-Conversion notes:
+The original version was a `.pyw` Python script that required:
+- `PowerShell`, `Python`, `PyQt5`, `AutoHotKey`, `Winget`
+- Manual startup configuration via `shell:startup`
+- It **started slowly**, especially on system boot
 
-* Docs to Markdown version 1.0β44
-* Sat May 10 2025 09:27:23 GMT-0700 (PDT)
-* Source doc: app_highlighter_readme
------>
+---
 
+## 🚀 New Version (Fast `.exe` Tray Service)
 
-**<span style="text-decoration:underline;">Simple screen region highlighter</span>**
+> **Now packaged as a `.exe`** with automatic startup at login, tray icon support, and no more dependency juggling!
 
-**Install:**
+---
 
-```bash
+## ✨ Features
 
-iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Unnamed10110/simpleHighlighter_Unnamed10110/master/install_highlighter.ps1')
+- ✅ **Ctrl + Numpad7** to open overlay
+- 🖱 Draw multiple green highlight regions
+- ⎋ **Esc** to exit overlay
+- 🧠 Runs in the background, no taskbar clutter
+- 🟢 System tray icon (green dot)
+- 🔁 Automatically starts at Windows login
+- 🎁 Self-contained `.exe` builder via `exe_generator.py`
+
+---
+
+## 🚀 Usage (New .exe Method)
+1. Build and register the highlighter
+```python
+python exe_generator.py
 ```
-![Demo](https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/blob/master/Animation.gif)
+- Auto-installs dependencies
+- Builds highlighter.exe with tray icon
+- Registers for startup via Windows registry
+
+2. Use the highlighter
+- Press Ctrl + Numpad7 to activate the overlay
+- Click and drag to create green-highlight rectangles
+- Press Ctrl + Z to undo (optional)
+- Press Esc to exit overlay
+- Stays running in background with a green tray icon
+
+---
+
+## 🟢DEMO
+- Exe creation:
 
 
-**Usage**:
-After installing, when you want to highlight a part of the screen press ctrl + Numpad7, then you can select multiple sreen regions. Press ctrl + z to undo or  Esc to quit .
 
 
-![usage_animation](https://github.com/user-attachments/assets/b2c6173e-5f79-46ad-98b2-732c1a1b8a05)
+---
+
+## 📁 Project Files
+| File               | Purpose                                  |
+| ------------------ | ---------------------------------------- |
+| `highlighter.pyw`  | Main screen overlay logic                |
+| `exe_generator.py` | Creates `.exe`, tray icon, startup entry |
+| `green_dot.ico`    | Auto-generated icon (deleted after use)  |
+
+---
+
+## 🔧 Dependencies
+Automatically handled when you run ##exe_generator.py##
+- Python 3.7+
+- PyQt5
+- Pillow
+- PyInstaller
+
+---
+
+## 🏁 Autostart
+Once generated, the app is registered at:
+```powershell
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+```
+
+You can verify this via regedit or with PowerShell:
+```powershell
+Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" | Select-Object ScreenHighlighter
+```
+---
+
+## 📝 Notes
+- Everything inside the selected regions remains fully interactive
+- Undo support (Ctrl + Z) is partially implemented (optional)
+- You can safely delete run_highlighter.ahk if switching fully to .exe
+
+---
+
+## 📋 License
+MIT — Free for personal or commercial use. Contributions welcome!
+
+---
+
+## 🙌 Credits
+Original idea and interaction model from Flameshot (Linux)
+Tray icon, development and packaging by [Unnamed10110]([https://example.com](https://github.com/Unnamed10110))
 
 
 
 
-**Dependencies:**
 
-
-
-* . PWSH
-* . Winget
-* . Python
-* . PyQt5
-* . Autho Hotkey V2
-
-  . You should run the created file run_highlighter.ahk everytime the computer restarts or add it to the startup to make it run automatically at startup (win + r and, type: shell:startup + enter, paste a shortcut to the run_highlighter.ahk file).
-
-  . Everything inside any region selected is functional!
