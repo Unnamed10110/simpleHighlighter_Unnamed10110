@@ -1,6 +1,6 @@
 <blockquote>
 <strong>🟢 Hello there:</strong> This used to be a simple python program running in the console, and activated via auto hotkey to run it which made it really slow. Now it is a fully functional background service much faster and easier to set up.
-Do not worry about the .exe change, you can see the source code, and even the code that generates the .exe (it's al there).
+Do not worry about the .exe change, you can see the source code, and even the code that generates the .exe (it's all there).
 
 Any suggestion is much appreciated
 
@@ -58,7 +58,11 @@ python exe_generator.py
 ---
 
 ## 🟢DEMO
-- Exe creation:
+- Exe creation and execution test:
+
+
+https://github.com/user-attachments/assets/0e359355-a76e-46a5-8cb6-0bb98b777aa1
+
 
 
 
