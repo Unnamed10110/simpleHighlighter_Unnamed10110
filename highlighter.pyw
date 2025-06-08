@@ -143,6 +143,8 @@ class TrayApp:
     def register_hotkey(self):
         try:
             keyboard.add_hotkey("ctrl+num 7", lambda: self.signals.show_overlay.emit())
+            keyboard.add_hotkey("shift+windows+x", lambda: self.signals.show_overlay.emit())
+
         except Exception as e:
             print("Hotkey registration failed:", e)
 
