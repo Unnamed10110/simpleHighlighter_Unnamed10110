@@ -29,7 +29,7 @@ The original version was a `.pyw` Python script that required:
 
 ## ✨ Features
 
-- ✅ **Ctrl + Numpad7 or Shift + Win + X** to open overlay
+- ✅ **Ctrl + Numpad7 or Shift + Alt + X** to open overlay
 - 🖱 Draw multiple green highlight regions
 - ⎋ **Esc** to exit overlay
 - 🧠 Runs in the background, no taskbar clutter
@@ -49,7 +49,7 @@ python exe_generator.py
 - Registers for startup via Windows registry
 
 2. Use the highlighter
-- Press Ctrl + Numpad7 (Shift + Windows + x) to activate the overlay
+- Press Ctrl + Numpad7 (Shift + Alt + X) to activate the overlay
 - Click and drag to create green-highlight rectangles
 - Press Ctrl + Z to undo (optional)
 - Press Esc to exit overlay
