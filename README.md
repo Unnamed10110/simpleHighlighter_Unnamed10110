@@ -11,6 +11,7 @@ Any suggestion is much appreciated
 
 This is a fast, lightweight **screen highlighter overlay** for Windows, inspired by [Flameshot](https://github.com/flameshot-org/flameshot) (Besides many obvious differences, one is that the overlay in the program does not "freeze" the screen when is activated). It runs silently in the background, is triggered via a hotkey, and allows you to draw green transparent rectangles on the screen for visual focus or annotation.
 <br>
+
 ---
 <br>
 
@@ -21,12 +22,14 @@ The original version was a `.pyw` Python script that required:
 - Manual startup configuration via `shell:startup`
 - It **started slowly**, especially on system boot
 <br>
+
 ---
 
 ## 🚀 New Version (Fast `.exe` Tray Service)
 
 > **Now packaged as a `.exe`** with automatic startup at login, tray icon support, and no more dependency juggling!
 <br>
+
 ---
 
 ## ✨ Features
@@ -39,6 +42,7 @@ The original version was a `.pyw` Python script that required:
 - 🔁 Automatically starts at Windows login
 - 🎁 Self-contained `.exe` builder via `exe_generator.py`
 <br>
+
 ---
 
 ## 🚀 Usage (New .exe Method)
@@ -52,6 +56,7 @@ python exe_generator.py
 - Builds highlighter.exe with tray icon
 - Registers for startup via Windows registry
 <br>
+
 2. Use the highlighter
 - Press Ctrl + Numpad7 (Shift + Alt + X) to activate the overlay
 - Click and drag to create green-highlight rectangles
@@ -59,6 +64,7 @@ python exe_generator.py
 - Press Esc to exit overlay
 - Stays running in background with a green tray icon
 <br>
+
 ---
 <br>
 
@@ -78,6 +84,7 @@ https://github.com/user-attachments/assets/0e359355-a76e-46a5-8cb6-0bb98b777aa1
 
 
 <br>
+
 ---
 <br>
 
