@@ -49,7 +49,7 @@ python exe_generator.py
 - Registers for startup via Windows registry
 
 2. Use the highlighter
-- Press Ctrl + Numpad7 to activate the overlay
+- Press Ctrl + Numpad7 (Shift + Windows + x) to activate the overlay
 - Click and drag to create green-highlight rectangles
 - Press Ctrl + Z to undo (optional)
 - Press Esc to exit overlay
