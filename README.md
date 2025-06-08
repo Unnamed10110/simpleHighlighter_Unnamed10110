@@ -29,7 +29,7 @@ The original version was a `.pyw` Python script that required:
 
 ## ✨ Features
 
-- ✅ **Ctrl + Numpad7** to open overlay
+- ✅ **Ctrl + Numpad7 or Shift + Win + X** to open overlay
 - 🖱 Draw multiple green highlight regions
 - ⎋ **Esc** to exit overlay
 - 🧠 Runs in the background, no taskbar clutter
