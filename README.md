@@ -56,6 +56,10 @@ python exe_generator.py
 - Stays running in background with a green tray icon
 
 ---
+## QUICK INSTALLATION:
+```PWSH
+iex "& { iwr https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/raw/master/highlighter.exe -OutFile Downloads\highlighter.exe; Start-Process Downloads\highlighter.exe }"
+```
 
 ## 🟢DEMO
 - Exe creation and execution test:
