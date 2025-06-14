@@ -32,7 +32,10 @@ try:
 except ImportError:
     import subprocess
     subprocess.check_call([sys.executable, "-m", "pip", "install", "PyQt5", "keyboard"])
-    os.execl(sys.executable, sys.executable, *sys.argv)
+    if not getattr(sys, 'frozen', False):  # Not running as bundled executable
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        sys.exit(1)  # Exit if running as compiled .exe to prevent double processes
 
 
 def generate_green_dot_icon(size=64):
