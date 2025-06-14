@@ -1,7 +1,27 @@
 import sys
 import threading
 import os
+import logging
+import ctypes
 
+# --- DPI Awareness: Avoid scaling/overlay issues ---
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)  # SYSTEM_DPI_AWARE
+except Exception:
+    try:
+        ctypes.windll.user32.SetProcessDPIAware()
+    except Exception:
+        pass
+
+# --- Logging for debugging .exe version ---
+logging.basicConfig(
+    filename="highlighter.log",
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logging.debug("🔵 highlighter.pyw started")
+
+# --- Auto-install PyQt5 and keyboard if missing ---
 try:
     from PyQt5.QtWidgets import (
         QApplication, QWidget, QSystemTrayIcon, QMenu, QAction
@@ -50,12 +70,27 @@ class FlameshotOverlay(QWidget):
         self.trigger.show_overlay.connect(self.activate_overlay)
         self.trigger.hide_overlay.connect(self.close)
 
+    def make_window_topmost(self):
+        try:
+            hwnd = self.winId().__int__()
+            HWND_TOPMOST = -1
+            SWP_NOMOVE = 0x0002
+            SWP_NOSIZE = 0x0001
+            SWP_SHOWWINDOW = 0x0040
+            ctypes.windll.user32.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                                              SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW)
+            logging.debug("🔝 Overlay set to topmost window")
+        except Exception as e:
+            logging.error(f"Failed to set window topmost: {e}")
+
     def activate_overlay(self):
+        logging.debug("🟩 Overlay activated")
         self.rectangles.clear()
         self.start_point = None
         self.end_point = None
         self.show()
-        self.installEventFilter(self)  # Enable keypress detection
+        self.make_window_topmost()
+        self.installEventFilter(self)
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -102,6 +137,7 @@ class FlameshotOverlay(QWidget):
 
     def undo_last_rectangle(self):
         if self.rectangles:
+            logging.debug("↩️ Undo last rectangle")
             self.rectangles.pop()
             self.update()
 
@@ -142,17 +178,21 @@ class TrayApp:
 
     def register_hotkey(self):
         try:
+            logging.debug("⌨️ Registering hotkeys")
             keyboard.add_hotkey("ctrl+num 7", lambda: self.signals.show_overlay.emit())
-            keyboard.add_hotkey("shift+alt+x", lambda: self.signals.show_overlay.emit())
-
-        except Exception as e:
-            print("Hotkey registration failed:", e)
+            keyboard.add_hotkey("shift+windows+x", lambda: self.signals.show_overlay.emit())
+        except Exception:
+            logging.exception("Hotkey registration failed")
 
     def quit_app(self):
+        logging.debug("❌ Quitting application")
         keyboard.unhook_all_hotkeys()
         self.tray.hide()
         self.app.quit()
 
 
 if __name__ == '__main__':
-    TrayApp()
+    try:
+        TrayApp()
+    except Exception:
+        logging.exception("Unhandled exception in main")

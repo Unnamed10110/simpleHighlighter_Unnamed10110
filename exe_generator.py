@@ -1,6 +1,8 @@
 import os
 import sys
 import subprocess
+import shutil
+import winreg
 
 # --- Auto-install dependencies ---
 def install_missing_packages():
@@ -14,12 +16,11 @@ def install_missing_packages():
 
 install_missing_packages()
 
-# --- Import dependencies now that they're installed ---
+# --- Icon generation ---
 from PIL import Image, ImageDraw
-import shutil
-import winreg
 
-ICON_PATH = "green_dot.ico"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ICON_PATH = os.path.join(SCRIPT_DIR, "green_dot.ico")
 
 def create_icon(path=ICON_PATH, size=64):
     """Create a green dot icon."""
@@ -33,32 +34,41 @@ def create_icon(path=ICON_PATH, size=64):
     print(f"✅ Icon saved as {path}")
 
 def build_exe(script='highlighter.pyw', icon=ICON_PATH, exe_name='highlighter.exe'):
-    if not os.path.exists(script):
-        print(f"❌ Script {script} not found in current folder!")
+    script_path = os.path.join(SCRIPT_DIR, script)
+    output_exe_path = os.path.join(SCRIPT_DIR, exe_name)
+
+    if not os.path.exists(script_path):
+        print(f"❌ Script {script} not found!")
         return
 
     print("🏗️ Building executable using PyInstaller...")
-    subprocess.run([
+
+    args = [
         "pyinstaller",
         "--noconfirm",
-        "--onefile",
         "--windowed",
+        "--onefile",  # <-- FORCE single .exe output
         f"--icon={icon}",
-        script
-    ], check=True)
+        f"--distpath={SCRIPT_DIR}",  # Output .exe right here
+        f"--workpath={os.path.join(SCRIPT_DIR, 'build')}",
+        f"--specpath={SCRIPT_DIR}",
+        script_path,
+    ]
 
-    # Move the compiled .exe to current directory
-    src = os.path.join("dist", os.path.splitext(script)[0] + ".exe")
-    dst = os.path.abspath(exe_name)
-    if os.path.exists(src):
-        shutil.move(src, dst)
-        print(f"✅ Moved {exe_name} to current directory.")
+    subprocess.run(args, check=True)
+
+    built_exe = os.path.join(SCRIPT_DIR, os.path.splitext(script)[0] + ".exe")
+    if os.path.exists(built_exe) and built_exe != output_exe_path:
+        shutil.move(built_exe, output_exe_path)
+        print(f"✅ Moved to: {output_exe_path}")
+    elif os.path.exists(output_exe_path):
+        print(f"✅ Executable ready: {output_exe_path}")
     else:
         print("❌ Build succeeded but .exe not found.")
 
 def add_to_startup(app_name="ScreenHighlighter", exe_path=None):
     if exe_path is None:
-        exe_path = os.path.abspath("highlighter.exe")
+        exe_path = os.path.join(SCRIPT_DIR, "highlighter.exe")
 
     key = r"Software\Microsoft\Windows\CurrentVersion\Run"
     try:
@@ -68,16 +78,17 @@ def add_to_startup(app_name="ScreenHighlighter", exe_path=None):
     except Exception as e:
         print(f"❌ Failed to set startup entry: {e}")
 
-def clean_build_artifacts():
-    for folder in ["build", "__pycache__", "dist"]:
-        if os.path.exists(folder):
-            shutil.rmtree(folder)
-    for file in os.listdir():
-        if file.endswith(".spec"):
-            os.remove(file)
-    if os.path.exists(ICON_PATH):
-        os.remove(ICON_PATH)
-        print(f"🧹 Removed temporary icon file: {ICON_PATH}")
+def clean_everything_except(exe_name="highlighter.exe"):
+    for item in os.listdir(SCRIPT_DIR):
+        path = os.path.join(SCRIPT_DIR, item)
+        if item == exe_name:
+            continue
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        elif item.endswith((".spec", ".ico", ".log", ".pyc")) or item.startswith("highlighter") and item.endswith(".exe") and item != exe_name:
+            os.remove(path)
+
+    print("🧹 Cleaned up all build files, kept only:", exe_name)
 
 if __name__ == "__main__":
     try:
@@ -85,6 +96,6 @@ if __name__ == "__main__":
         build_exe()
         add_to_startup()
     except subprocess.CalledProcessError as e:
-        print(f"❌ Error during process: {e}")
+        print(f"❌ Error during build: {e}")
     finally:
-        clean_build_artifacts()
+        clean_everything_except("highlighter.exe")
