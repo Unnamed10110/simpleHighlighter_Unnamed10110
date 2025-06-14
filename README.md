@@ -17,7 +17,7 @@ Any suggestion is much appreciated
 - <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
  
 - <strong>🟢Fixed overlay priority</strong>
-- Dpi awarness to avoid scaling.
+- <strong>🟢Dpi awarness to avoid scaling.
 
 
 
