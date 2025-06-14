@@ -1,28 +1,27 @@
-<blockquote>
-<strong>🟢 Hello there:</strong> This used to be a simple python program running in the console, and activated via auto hotkey to run it which made it really slow. Now it is a fully functional background service much faster and easier to set up.
-Do not worry about the .exe change, you can see the source code, and even the code that generates the .exe (it's all there).
-
-Any suggestion is much appreciated
-
-</blockquote>
-<br>
-
-> 🛠️ **Bugs Fixed!**  
-> <strong>🟢The `.exe` now doesn't duplicates</strong> the process when it runs.
-> 
-> <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
-> 
-> <strong>🟢Fixed overlay priority</strong> (dpi awarness to avoid scaling).
-
-
 <br>
 
 # 🔍 Simple Screen Region Highlighter (Windows Tray Service)
 
 This is a fast, lightweight **screen highlighter overlay** for Windows, inspired by [Flameshot](https://github.com/flameshot-org/flameshot) (Besides many obvious differences, one is that the overlay in the program does not "freeze" the screen when is activated). It runs silently in the background, is triggered via a hotkey, and allows you to draw green transparent rectangles on the screen for visual focus or annotation.
+
+<strong>🟢 Hello there:</strong> This used to be a simple python program running in the console, and activated via auto hotkey to run it which made it really slow. Now it is a fully functional background service much faster and easier to set up.
+Do not worry about the .exe change, you can see the source code, and even the code that generates the .exe (it's all there).
+
+Any suggestion is much appreciated
 <br>
 
 ---
+- 🛠️ **Bugs Fixed!**  
+- <strong>🟢The `.exe` now doesn't duplicates</strong> the process when it runs.
+ 
+- <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
+ 
+- <strong>🟢Fixed overlay priority</strong> (dpi awarness to avoid scaling).
+
+
+
+---
+
 <br>
 
 ## 🕰️ Previous Version (Slower Startup)
@@ -44,7 +43,7 @@ The original version was a `.pyw` Python script that required:
 
 ## ✨ Features
 
-- ✅ **Ctrl + Numpad7 or Shift + Alt + X** to open overlay
+- ✅ **Ctrl + Numpad7 or Shift+Win+X** to open overlay
 - 🖱 Draw multiple green highlight regions
 - ⎋ **Esc** to exit overlay
 - 🧠 Runs in the background, no taskbar clutter
@@ -68,7 +67,7 @@ python exe_generator.py
 <br>
 
 2. Use the highlighter
-- Press Ctrl + Numpad7 (Shift + Alt + X) to activate the overlay
+- Press Ctrl + Numpad7 (Shift+Win+X) to activate the overlay
 - Click and drag to create green-highlight rectangles
 - Press Ctrl + Z to undo (optional)
 - Press Esc to exit overlay
