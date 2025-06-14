@@ -111,11 +111,19 @@ https://github.com/user-attachments/assets/0e359355-a76e-46a5-8cb6-0bb98b777aa1
 <br>
 
 ## 🔧 Dependencies
-Automatically handled when you run ##exe_generator.py##
-- Python 3.7+
-- PyQt5
-- Pillow
-- PyInstaller
+Automatically handled when you run **exe_generator.py**
+### 🧩 Dependencies & Features
+
+| Dependency / Feature | Description |
+|----------------------|-------------|
+| **Python 3.7+** | Required minimum Python version to run the script. |
+| **PyQt5** | GUI interface: system tray icon, transparent full-screen overlay, rectangle drawing, and key event handling. |
+| **Pillow** | Generates the `.ico` file used for the app icon. |
+| **PyInstaller** | Packages the Python script into a standalone `.exe` for Windows. |
+| **keyboard** | Registers global hotkeys (`Ctrl+Num7`, `Shift+Win+X`) to trigger the overlay. |
+| **SetProcessDpiAwareness**, **SetProcessDPIAware** | Enables DPI-awareness to avoid blurry overlays or incorrect scaling on high-DPI screens. |
+| **SetWindowPos** | Ensures the overlay window stays on top of all others. |
+
 
 ---
 <br>
