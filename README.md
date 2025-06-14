@@ -7,6 +7,16 @@ Any suggestion is much appreciated
 </blockquote>
 <br>
 
+> 🛠️ **Bugs Fixed!**  
+> <strong>🟢The `.exe` now doesn't duplicates</strong> the process when it runs.
+> 
+> <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
+> 
+> <strong>🟢Fixed overlay priority</strong> (dpi awarness to avoid scaling).
+
+
+<br>
+
 # 🔍 Simple Screen Region Highlighter (Windows Tray Service)
 
 This is a fast, lightweight **screen highlighter overlay** for Windows, inspired by [Flameshot](https://github.com/flameshot-org/flameshot) (Besides many obvious differences, one is that the overlay in the program does not "freeze" the screen when is activated). It runs silently in the background, is triggered via a hotkey, and allows you to draw green transparent rectangles on the screen for visual focus or annotation.
