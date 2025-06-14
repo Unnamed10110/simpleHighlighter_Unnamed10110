@@ -91,9 +91,10 @@ iex "& { iwr https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/raw/
 https://github.com/user-attachments/assets/0e359355-a76e-46a5-8cb6-0bb98b777aa1
 
 
+---
 
-
-<br>
+## Release
+> 📦 **[v2.2.0 Released!](https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/releases/tag/v2.2.0)** — 🐛 Bugs fixed!
 
 ---
 <br>
