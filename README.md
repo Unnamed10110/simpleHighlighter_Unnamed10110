@@ -26,6 +26,12 @@ PyInstaller creates a self-extracting executable that:
 
  - The first process stays alive in memory to manage the temporary environment and delete it on exit
 
+So:
+
+- Process 1: the stub/loader (~1 MB RAM)
+
+- Process 2: your real app (~20 MB RAM, uses Qt GUI, keyboard lib, etc.)
+
 ```
  
 - <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
