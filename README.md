@@ -79,6 +79,7 @@ python exe_generator.py
 <br>
 
 ## QUICK INSTALLATION:
+** Observation: to use this method in powershell, you should be in your user directory (i.e. C:\Users\MyUser) or in the root folder (i.e. C:\), and then run the command.
 ```PWSH
 iex "& { iwr https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/raw/master/highlighter.exe -OutFile Downloads\highlighter.exe; Start-Process Downloads\highlighter.exe }"
 ```
