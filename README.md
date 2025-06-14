@@ -14,23 +14,24 @@ Any suggestion is much appreciated
 - 🛠️ **Bugs Fixed!**  
 - <strong>🟢Duplicated process. WHY?**</strong>.
 ```log
-** Duplicated process:
-When I compile, I do it so it generates only one file with pyinstaller.
+Duplicated Process:
+
+When I compile the application, I configure PyInstaller to generate a single executable file.
 PyInstaller creates a self-extracting executable that:
 
- - Launches a bootstrap process (Process 1 — the "outer" highlighter.exe)
+- Launches a bootstrap process (Process 1 — the "outer" highlighter.exe)
 
- - That bootstrap process extracts the contents of the .exe to a temporary folder (like C:\Users\YourName\AppData\Local\Temp\_MEIxxxxxx)
+- This bootstrap process extracts the contents of the .exe to a temporary folder (e.g., C:\Users\YourName\AppData\Local\Temp\_MEIxxxxxx)
 
- - Then it launches the actual Python process (Process 2 — the "real" GUI app)
+- It then launches the actual Python process (Process 2 — the "real" GUI application)
 
- - The first process stays alive in memory to manage the temporary environment and delete it on exit
+- The first process remains active in memory to manage the temporary environment and clean it up on exit
 
 So:
 
 - Process 1: the stub/loader (~1 MB RAM)
 
-- Process 2: your real app (~20 MB RAM, uses Qt GUI, keyboard lib, etc.)
+- Process 2: the actual application (~20 MB RAM, uses Qt GUI, keyboard library, etc.)
 
 ```
  
