@@ -145,7 +145,7 @@ Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" | Select-
 ## 📝 Notes
 - Everything inside the selected regions remains fully interactive
 - Undo support (Ctrl + Z) is partially implemented (optional)
-- You can safely delete run_highlighter.ahk if switching fully to .exe
+- You can safely delete run_highlighter.ahk if switching fully to .exe (deprecated)
 
 ---
 <br>
