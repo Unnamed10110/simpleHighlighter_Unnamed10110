@@ -12,7 +12,21 @@ Any suggestion is much appreciated
 
 ---
 - 🛠️ **Bugs Fixed!**  
-- <strong>🟢The `.exe` now doesn't duplicates</strong> the process when it runs.
+- <strong>🟢Duplicated process. WHY?**</strong>.
+```log
+** Duplicated process:
+When I compile, I do it so it generates only one file with pyinstaller.
+PyInstaller creates a self-extracting executable that:
+
+ - Launches a bootstrap process (Process 1 — the "outer" highlighter.exe)
+
+ - That bootstrap process extracts the contents of the .exe to a temporary folder (like C:\Users\YourName\AppData\Local\Temp\_MEIxxxxxx)
+
+ - Then it launches the actual Python process (Process 2 — the "real" GUI app)
+
+ - The first process stays alive in memory to manage the temporary environment and delete it on exit
+
+```
  
 - <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
  
