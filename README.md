@@ -37,7 +37,13 @@ So:
  
 - <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
  
-- <strong>🟢Fixed overlay priority</strong> (Now out-focus any other program to avoid interfering with similar hotkeys and Capital letter on text editors/IDE's)
+- <strong>🟢Fixed overlay priority</strong>
+---
+
+  (Now out-focus any other program to avoid interfering with similar hotkeys and Capital letter on text editors/IDE's) -->> ONLY FOR ONE-HANDED (primary) HOTKEY
+
+---
+
 - <strong>🟢Dpi awarness to avoid scaling.
 
 
