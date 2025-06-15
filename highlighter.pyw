@@ -1,7 +1,6 @@
 import sys
 import threading
 import os
-import logging
 import ctypes
 import time
 
@@ -12,13 +11,6 @@ except Exception:
         ctypes.windll.user32.SetProcessDPIAware()
     except Exception:
         pass
-
-logging.basicConfig(
-    filename="highlighter.log",
-    level=logging.DEBUG,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
-logging.debug("🔵 highlighter.pyw started")
 
 try:
     from PyQt5.QtWidgets import (
@@ -36,17 +28,7 @@ except ImportError:
         sys.exit(1)
 
 def click_taskbar():
-    try:
-        screen_width = ctypes.windll.user32.GetSystemMetrics(0)
-        screen_height = ctypes.windll.user32.GetSystemMetrics(1)
-        x = screen_width // 2
-        y = screen_height - 5
-        ctypes.windll.user32.SetCursorPos(x, y)
-        ctypes.windll.user32.mouse_event(0x0002, 0, 0, 0, 0)
-        ctypes.windll.user32.mouse_event(0x0004, 0, 0, 0, 0)
-        logging.debug(f"🖱️ Clicked taskbar at ({x},{y}) to unfocus")
-    except Exception as e:
-        logging.error(f"Failed to click taskbar: {e}")
+    keyboard.send("windows+t")
 
 def generate_green_dot_icon(size=64):
     pixmap = QPixmap(size, size)
@@ -82,20 +64,15 @@ class FlameshotOverlay(QWidget):
         self.trigger.hide_overlay.connect(self.close)
 
     def make_window_topmost(self):
-        try:
-            hwnd = self.winId().__int__()
-            HWND_TOPMOST = -1
-            SWP_NOMOVE = 0x0002
-            SWP_NOSIZE = 0x0001
-            SWP_SHOWWINDOW = 0x0040
-            ctypes.windll.user32.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
-                                              SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW)
-            logging.debug("🔝 Overlay set to topmost window")
-        except Exception as e:
-            logging.error(f"Failed to set window topmost: {e}")
+        hwnd = self.winId().__int__()
+        HWND_TOPMOST = -1
+        SWP_NOMOVE = 0x0002
+        SWP_NOSIZE = 0x0001
+        SWP_SHOWWINDOW = 0x0040
+        ctypes.windll.user32.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                                          SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW)
 
     def activate_overlay(self):
-        logging.debug("🟩 Overlay activated")
         self.rectangles.clear()
         self.start_point = None
         self.end_point = None
@@ -148,7 +125,6 @@ class FlameshotOverlay(QWidget):
 
     def undo_last_rectangle(self):
         if self.rectangles:
-            logging.debug("↩️ Undo last rectangle")
             self.rectangles.pop()
             self.update()
 
@@ -179,6 +155,7 @@ class TrayApp:
         menu.addAction(quit_action)
 
         self.tray.setContextMenu(menu)
+        self.tray.activated.connect(self.handle_tray_click)
         self.tray.show()
 
         self.listener_thread = threading.Thread(target=self.register_hotkeys, daemon=True)
@@ -186,39 +163,34 @@ class TrayApp:
 
         sys.exit(self.app.exec_())
 
-    def activate_overlay_with_taskbar_click(self):
-        click_taskbar()
-        time.sleep(0.05)
+    def handle_tray_click(self, reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.recover_hotkeys()
+
+    def recover_hotkeys(self):
+        keyboard.unhook_all_hotkeys()
+        self.register_hotkeys()
+
+    def activate_overlay_without_click(self):
         self.signals.show_overlay.emit()
 
     def delayed_taskbar_click_then_overlay(self):
-        # Wait a bit to avoid input conflict (system still processing key event)
         time.sleep(0.1)
         click_taskbar()
         time.sleep(0.05)
         self.signals.show_overlay.emit()
 
-    def activate_overlay_without_click(self):
-        self.signals.show_overlay.emit()
-
     def register_hotkeys(self):
         try:
-            logging.debug("⌨️ Registering hotkeys")
             keyboard.add_hotkey("ctrl+num 7", self.activate_overlay_without_click)
             keyboard.add_hotkey("shift+alt+x", self.delayed_taskbar_click_then_overlay, suppress=True)
-        except Exception:
-            logging.exception("Hotkey registration failed")
-
+        except:
+            pass
 
     def quit_app(self):
-        logging.debug("❌ Quitting application")
         keyboard.unhook_all_hotkeys()
         self.tray.hide()
         self.app.quit()
 
-
 if __name__ == '__main__':
-    try:
-        TrayApp()
-    except Exception:
-        logging.exception("Unhandled exception in main")
+    TrayApp()
