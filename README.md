@@ -35,7 +35,7 @@ So:
 
 ```
  
-- <strong>🟢Added a one-handed shortcut</strong> Shift+Win+X.
+- <strong>🟢Added a one-handed shortcut</strong> Shift+Alt+X.
  
 - <strong>🟢Fixed overlay priority</strong>
 ---
@@ -71,7 +71,7 @@ The original version was a `.pyw` Python script that required:
 
 ## ✨ Features
 
-- ✅ **Ctrl + Numpad7 or Shift+Win+X** to open overlay
+- ✅ **Shift+Alt+X or Ctrl + Numpad7** to open overlay
 - 🖱 Draw multiple green highlight regions
 - ⎋ **Esc** to exit overlay
 - 🧠 Runs in the background, no taskbar clutter
@@ -147,7 +147,7 @@ Automatically handled when you run **exe_generator.py**
 | **PyQt5** | GUI interface: system tray icon, transparent full-screen overlay, rectangle drawing, and key event handling. |
 | **Pillow** | Generates the `.ico` file used for the app icon. |
 | **PyInstaller** | Packages the Python script into a standalone `.exe` for Windows. |
-| **keyboard** | Registers global hotkeys (`Ctrl+Num7`, `Shift+Win+X`) to trigger the overlay. |
+| **keyboard** | Registers global hotkeys (`Shift+Alt+X`, `Ctrl+Num7`) to trigger the overlay. |
 | **SetProcessDpiAwareness**, **SetProcessDPIAware** | Enables DPI-awareness to avoid blurry overlays or incorrect scaling on high-DPI screens. |
 | **SetWindowPos** | Ensures the overlay window stays on top of all others. |
 
