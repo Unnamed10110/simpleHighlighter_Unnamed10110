@@ -96,11 +96,12 @@ python exe_generator.py
 <br>
 
 2. Use the highlighter
-- Press Ctrl + Numpad7 (Shift+Win+X) to activate the overlay
+- Press Ctrl + Numpad7 (Shift+Alt+X) to activate the overlay
 - Click and drag to create green-highlight rectangles
 - Press Ctrl + Z to undo (optional)
 - Press Esc to exit overlay
 - Stays running in background with a green tray icon
+- If after a while the hotkeys stops openning the overlay, just left click one time on the icon in the taskbar tray and it will refresh it, and it will work again.
 <br>
 
 ---
