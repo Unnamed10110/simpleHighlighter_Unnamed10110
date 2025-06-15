@@ -5,7 +5,6 @@ import logging
 import ctypes
 import time
 
-# --- DPI Awareness: Avoid scaling/overlay issues ---
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(1)
 except Exception:
@@ -74,17 +73,23 @@ class FlameshotOverlay(QWidget):
         self.setWindowState(Qt.WindowFullScreen)
         self.setMouseTracking(True)
         self.setCursor(Qt.CrossCursor)
+
         self.start_point = None
         self.end_point = None
         self.rectangles = []
+
         self.trigger.show_overlay.connect(self.activate_overlay)
         self.trigger.hide_overlay.connect(self.close)
 
     def make_window_topmost(self):
         try:
             hwnd = self.winId().__int__()
-            ctypes.windll.user32.SetWindowPos(hwnd, -1, 0, 0, 0, 0,
-                                              0x0002 | 0x0001 | 0x0040)
+            HWND_TOPMOST = -1
+            SWP_NOMOVE = 0x0002
+            SWP_NOSIZE = 0x0001
+            SWP_SHOWWINDOW = 0x0040
+            ctypes.windll.user32.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                                              SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW)
             logging.debug("🔝 Overlay set to topmost window")
         except Exception as e:
             logging.error(f"Failed to set window topmost: {e}")
@@ -102,18 +107,23 @@ class FlameshotOverlay(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.fillRect(self.rect(), QColor(0, 0, 0, 100))
+
         painter.setCompositionMode(QPainter.CompositionMode_Clear)
         for rect in self.rectangles:
             painter.fillRect(rect, Qt.transparent)
+
         if self.start_point and self.end_point:
             live_rect = QRect(self.start_point, self.end_point).normalized()
             painter.fillRect(live_rect, Qt.transparent)
+
         painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
         pen = QPen(QColor(0, 255, 0), 2)
         painter.setPen(pen)
         painter.setBrush(Qt.NoBrush)
+
         for rect in self.rectangles:
             painter.drawRect(rect)
+
         if self.start_point and self.end_point:
             painter.drawRect(live_rect)
 
@@ -167,6 +177,7 @@ class TrayApp:
         quit_action = QAction("Quit")
         quit_action.triggered.connect(self.quit_app)
         menu.addAction(quit_action)
+
         self.tray.setContextMenu(menu)
         self.tray.show()
 
@@ -176,14 +187,16 @@ class TrayApp:
         sys.exit(self.app.exec_())
 
     def activate_overlay_with_taskbar_click(self):
-        try:
-            keyboard.block_key('x')
-            click_taskbar()
-            time.sleep(0.05)
-            self.signals.show_overlay.emit()
-        finally:
-            time.sleep(0.1)
-            keyboard.unblock_key('x')
+        click_taskbar()
+        time.sleep(0.05)
+        self.signals.show_overlay.emit()
+
+    def delayed_taskbar_click_then_overlay(self):
+        # Wait a bit to avoid input conflict (system still processing key event)
+        time.sleep(0.1)
+        click_taskbar()
+        time.sleep(0.05)
+        self.signals.show_overlay.emit()
 
     def activate_overlay_without_click(self):
         self.signals.show_overlay.emit()
@@ -191,16 +204,18 @@ class TrayApp:
     def register_hotkeys(self):
         try:
             logging.debug("⌨️ Registering hotkeys")
-            keyboard.add_hotkey("shift+windows+x", self.activate_overlay_with_taskbar_click, suppress=True)
-            keyboard.add_hotkey("ctrl+num 7", self.activate_overlay_without_click, suppress=True)
+            keyboard.add_hotkey("ctrl+num 7", self.activate_overlay_without_click)
+            keyboard.add_hotkey("shift+alt+x", self.delayed_taskbar_click_then_overlay, suppress=True)
         except Exception:
             logging.exception("Hotkey registration failed")
+
 
     def quit_app(self):
         logging.debug("❌ Quitting application")
         keyboard.unhook_all_hotkeys()
         self.tray.hide()
         self.app.quit()
+
 
 if __name__ == '__main__':
     try:
