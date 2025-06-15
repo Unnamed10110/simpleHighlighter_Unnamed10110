@@ -41,7 +41,8 @@ So:
 ---
 
   🟢🟢 (Now out-focus any other program to avoid interfering with similar hotkeys and Capital letter on text editors/IDE's) -->> ONLY FOR ONE-HANDED (primary) HOTKEY
-
+  - Primary hotkey (Ona-handed): Shift+Alt+X -> Unfocus the current program to avoid interfering with other hotkeys and then open the overlay.
+  - Secondary hotkey: Ctrl + Numpad7 -> Activates the overlay and keeps the focus on the current focused program.
 ---
 
 - <strong>🟢Dpi awarness to avoid scaling.
