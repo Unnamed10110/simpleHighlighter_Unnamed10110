@@ -3,6 +3,7 @@ import threading
 import os
 import logging
 import ctypes
+import time
 
 # --- DPI Awareness: Avoid scaling/overlay issues ---
 try:
@@ -37,6 +38,23 @@ except ImportError:
     else:
         sys.exit(1)  # Exit if running as compiled .exe to prevent double processes
 
+def click_taskbar():
+    """Simulate a left mouse click on the bottom-center of the screen (taskbar area)."""
+    try:
+        screen_width = ctypes.windll.user32.GetSystemMetrics(0)
+        screen_height = ctypes.windll.user32.GetSystemMetrics(1)
+        x = screen_width // 2
+        y = screen_height - 5  # 5 pixels above bottom, should be on taskbar
+
+        # Move cursor
+        ctypes.windll.user32.SetCursorPos(x, y)
+        # Mouse down (left button)
+        ctypes.windll.user32.mouse_event(0x0002, 0, 0, 0, 0)
+        # Mouse up (left button)
+        ctypes.windll.user32.mouse_event(0x0004, 0, 0, 0, 0)
+        logging.debug(f"🖱️ Clicked taskbar at ({x},{y}) to unfocus")
+    except Exception as e:
+        logging.error(f"Failed to click taskbar: {e}")
 
 def generate_green_dot_icon(size=64):
     pixmap = QPixmap(size, size)
@@ -179,11 +197,21 @@ class TrayApp:
 
         sys.exit(self.app.exec_())
 
+    def activate_overlay_with_taskbar_click(self):
+        try:
+            keyboard.block_key('x')  # Block X so it’s not typed
+            click_taskbar()
+            time.sleep(0.05)
+            self.signals.show_overlay.emit()
+        finally:
+            time.sleep(0.1)
+            keyboard.unblock_key('x')
+
     def register_hotkey(self):
         try:
             logging.debug("⌨️ Registering hotkeys")
-            keyboard.add_hotkey("ctrl+num 7", lambda: self.signals.show_overlay.emit())
-            keyboard.add_hotkey("shift+windows+x", lambda: self.signals.show_overlay.emit())
+            keyboard.add_hotkey("ctrl+num 7", self.activate_overlay_with_taskbar_click, suppress=True)
+            keyboard.add_hotkey("shift+windows+x", self.activate_overlay_with_taskbar_click, suppress=True)
         except Exception:
             logging.exception("Hotkey registration failed")
 
