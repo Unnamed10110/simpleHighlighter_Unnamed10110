@@ -3,7 +3,9 @@ import threading
 import os
 import ctypes
 import time
+import winreg
 
+# DPI awareness
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(1)
 except Exception:
@@ -12,6 +14,19 @@ except Exception:
     except Exception:
         pass
 
+# Register at startup if running as compiled EXE
+def register_startup(app_name="ScreenHighlighter"):
+    if getattr(sys, 'frozen', False):
+        exe_path = sys.executable
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                r"Software\Microsoft\Windows\CurrentVersion\Run",
+                                0, winreg.KEY_SET_VALUE) as key:
+                winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, exe_path)
+        except Exception as e:
+            print(f"[Startup Registration] Failed: {e}")
+
+# Auto-install dependencies if missing
 try:
     from PyQt5.QtWidgets import (
         QApplication, QWidget, QSystemTrayIcon, QMenu, QAction
@@ -193,4 +208,5 @@ class TrayApp:
         self.app.quit()
 
 if __name__ == '__main__':
+    register_startup("ScreenHighlighter")
     TrayApp()
