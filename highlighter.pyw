@@ -4,6 +4,7 @@ import os
 import ctypes
 import time
 import winreg
+import traceback
 
 # DPI awareness
 try:
@@ -33,17 +34,25 @@ try:
     )
     from PyQt5.QtGui import QPainter, QPen, QColor, QIcon, QPixmap
     from PyQt5.QtCore import Qt, QRect, pyqtSignal, QObject
-    import keyboard
+    import win32con
+    import win32gui
+    import win32api
 except ImportError:
     import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "PyQt5", "keyboard"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "PyQt5", "pywin32"])
     if not getattr(sys, 'frozen', False):
         os.execl(sys.executable, sys.executable, *sys.argv)
     else:
         sys.exit(1)
 
 def click_taskbar():
-    keyboard.send("windows+t")
+    # Sends Windows + T to focus taskbar (same as your original keyboard.send)
+    # Using win32api to simulate keys:
+    win32api.keybd_event(win32con.VK_LWIN, 0, 0, 0)
+    win32api.keybd_event(ord('T'), 0, 0, 0)
+    time.sleep(0.05)
+    win32api.keybd_event(ord('T'), 0, win32con.KEYEVENTF_KEYUP, 0)
+    win32api.keybd_event(win32con.VK_LWIN, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 def generate_green_dot_icon(size=64):
     pixmap = QPixmap(size, size)
@@ -173,17 +182,20 @@ class TrayApp:
         self.tray.activated.connect(self.handle_tray_click)
         self.tray.show()
 
-        self.listener_thread = threading.Thread(target=self.register_hotkeys, daemon=True)
+        self.hotkeys_registered = False
+        self.running = True
+        self.listener_thread = threading.Thread(target=self.hotkey_listener, daemon=True)
         self.listener_thread.start()
 
         sys.exit(self.app.exec_())
 
     def handle_tray_click(self, reason):
         if reason == QSystemTrayIcon.Trigger:
+            # Recover hotkeys on tray icon click (optional)
             self.recover_hotkeys()
 
     def recover_hotkeys(self):
-        keyboard.unhook_all_hotkeys()
+        self.unregister_hotkeys()
         self.register_hotkeys()
 
     def activate_overlay_without_click(self):
@@ -196,14 +208,80 @@ class TrayApp:
         self.signals.show_overlay.emit()
 
     def register_hotkeys(self):
+        if self.hotkeys_registered:
+            return
+        # Modifiers for RegisterHotKey
+        MOD_CONTROL = 0x0002
+        MOD_SHIFT = 0x0004
+        MOD_ALT = 0x0001
+        VK_NUMPAD7 = 0x67
+        VK_X = 0x58
+
+        # Create a message-only window to receive hotkey messages
+        wc = win32gui.WNDCLASS()
+        wc.lpszClassName = "HotkeyListenerWindow"
+        wc.lpfnWndProc = self.wnd_proc
+        self.classAtom = win32gui.RegisterClass(wc)
+        self.hwnd = win32gui.CreateWindowEx(
+            0, self.classAtom, "HotkeyListenerWindow", 0,
+            0, 0, 0, 0,
+            0, 0, 0, None)
+
+        # Register hotkeys
+        if not win32gui.RegisterHotKey(self.hwnd, 1, MOD_CONTROL, VK_NUMPAD7):
+            print("[Hotkey Register Error] Ctrl+Numpad7")
+        else:
+            print("Registered Ctrl+Numpad7")
+
+        if not win32gui.RegisterHotKey(self.hwnd, 2, MOD_SHIFT | MOD_ALT, VK_X):
+            print("[Hotkey Register Error] Shift+Alt+X")
+        else:
+            print("Registered Shift+Alt+X")
+
+        self.hotkeys_registered = True
+
+    def unregister_hotkeys(self):
+        if not self.hotkeys_registered:
+            return
         try:
-            keyboard.add_hotkey("ctrl+num 7", self.activate_overlay_without_click)
-            keyboard.add_hotkey("shift+alt+x", self.delayed_taskbar_click_then_overlay, suppress=True)
-        except:
-            pass
+            win32gui.UnregisterHotKey(self.hwnd, 1)
+            win32gui.UnregisterHotKey(self.hwnd, 2)
+            win32gui.DestroyWindow(self.hwnd)
+            win32gui.UnregisterClass(self.classAtom, None)
+            self.hotkeys_registered = False
+            print("Unregistered hotkeys")
+        except Exception as e:
+            print(f"Error during unregistering hotkeys: {e}")
+
+    def wnd_proc(self, hwnd, msg, wparam, lparam):
+        if msg == win32con.WM_HOTKEY:
+            if wparam == 1:
+                # Ctrl + Numpad7 pressed
+                self.activate_overlay_without_click()
+            elif wparam == 2:
+                # Shift + Alt + X pressed
+                threading.Thread(target=self.delayed_taskbar_click_then_overlay, daemon=True).start()
+            return 0
+        elif msg == win32con.WM_DESTROY:
+            win32gui.PostQuitMessage(0)
+            return 0
+        else:
+            return win32gui.DefWindowProc(hwnd, msg, wparam, lparam)
+
+    def hotkey_listener(self):
+        try:
+            self.register_hotkeys()
+            # Message loop
+            while self.running:
+                win32gui.PumpWaitingMessages()
+                time.sleep(0.01)
+        except Exception:
+            print("[Hotkey Listener Exception]")
+            traceback.print_exc()
 
     def quit_app(self):
-        keyboard.unhook_all_hotkeys()
+        self.running = False
+        self.unregister_hotkeys()
         self.tray.hide()
         self.app.quit()
 
