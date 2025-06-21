@@ -1,117 +1,115 @@
+
 # 🔍 UnnamedHighlighter (Windows Tray Service)
 
-A fast, lightweight **screen highlighter overlay for Windows**, inspired by [Flameshot](https://github.com/flameshot-org/flameshot)—but with a key difference: the overlay **doesn’t freeze the screen**. It runs quietly in the background and lets you draw green transparent rectangles to highlight or annotate your screen.
+A fast, lightweight **screen highlighter overlay for Windows**, inspired by [Flameshot](https://github.com/flameshot-org/flameshot)—with a key difference: **it doesn't freeze your screen** when activated.
 
-> 🟢 Originally a simple Python script launched via AutoHotKey, this tool is now a **fully standalone tray application (.exe)** with faster startup, auto-launch on login, and hotkey activation.
+Runs silently in the background as a system tray app, allowing you to draw green translucent rectangles on your screen using global hotkeys.
 
-All source code is available, including the script used to generate the `.exe`.  
-**Suggestions and contributions are very welcome!**
+> 🟢 Originally a simple Python script + AutoHotKey. Now a **standalone tray `.exe`**, with auto-start, no dependencies at runtime, and self-healing behavior during development.
 
 ---
 
-## 🆕 Key Updates
+## 🆕 What's New in This Version?
 
-- 🐞 **Bugs fixed**  
-- 🟢 **Improved launch time and usability**  
-- 🟢 **One-handed hotkey added**: `Shift + Alt + X`  
-- 🟢 **Overlay DPI awareness**: no more blurry scaling on HiDPI screens  
-- 🟢 **Overlay priority fixed** (always on top)
+### ✅ Code & App Enhancements
 
-### Why two processes?
-When built with PyInstaller as a single `.exe` file:
+- 📌 **Tray-based background service** with PyQt5
+- ⚡ **One-handed hotkey**: `Shift + Alt + X`  
+- 🧊 **Overlay is topmost** but click-through-safe  
+- 🔁 **Hotkey recovery** via tray icon click  
+- 🖼️ **DPI-aware overlay** (fixes blurry HiDPI rendering)  
+- 🐛 **Dependency auto-install** if not frozen (`.py` dev mode)  
+- 🧠 **Self-registers in Registry** on first run as `.exe`
+
+---
+
+### 🔃 Dependency Changes
+
+| Dependency         | Status    | Purpose                                                              |
+|--------------------|-----------|----------------------------------------------------------------------|
+| `keyboard`         | ❌ Removed | Was used in early AHK phase; now replaced by native Windows hotkeys (NOW IT DOENS'T MESS UP THE KEYBOARD LAYOUT) |
+| `pywin32`          | ✅ Added   | Handles hotkey registration and tray messaging with `win32gui`      |
+| `PyQt5`            | ✅ Kept    | Overlay drawing and tray GUI                                        |
+| `Pillow`           | ✅ Optional | Only used in older icon generation (now done with `QPixmap`)       |
+| `ctypes` + `winreg`| ✅ Built-in | For DPI awareness and auto-start setup                              |
+| `PyInstaller`      | ✅ Build-time | For packaging `.exe`                                               |
+
+> 🛠️ Now uses **native Windows hotkeys via `RegisterHotKey`** instead of the cross-platform `keyboard` package.
+
+---
+
+## ⚡ Global Hotkeys
+
+| Hotkey             | Action                                                                 |
+|--------------------|------------------------------------------------------------------------|
+| `Shift + Alt + X`  | Main shortcut. Temporarily unfocuses window, then opens overlay.       |
+| `Ctrl + Numpad 7`  | Secondary shortcut. Opens overlay without touching active window.      |
+
+> 💡 If hotkeys stop working (e.g. after sleep), **click the tray icon once** to recover them.
+
+---
+
+## 🖼️ Features Summary
+
+- ✅ Draw translucent green rectangles anywhere on screen
+- 🔒 Overlay stays topmost but won’t hijack input
+- 🧠 Tray icon keeps the app running quietly
+- 🟢 Click tray icon to restore hotkeys instantly
+- ↩️ `Ctrl + Z` to undo last rectangle
+- ⎋ `Esc` to close overlay
+- 🚀 Auto-starts at boot via registry key
+- 📦 Fully self-contained `.exe` (no Python needed to run)
+
+---
+
+## 🔄 Why Two Processes?
+
+When built via PyInstaller:
+
 ```text
-- Process 1: Launcher (bootstrap stub)
-  • Extracts the app into a temporary folder (e.g., _MEIxxxxxx)
-  • Launches Process 2
+Process 1: Bootstrapper
+  • Extracts app to a temp folder (_MEIxxxxxx)
+  • Launches actual GUI process
 
-- Process 2: Actual app
-  • Runs the GUI (PyQt5), overlay logic, hotkey handler
+Process 2: Main App
+  • Handles tray icon, overlay GUI, hotkeys
 
-- Process 1 stays alive to manage cleanup on exit.
+Process 1 remains in background to manage cleanup on exit.
 ```
 
 ---
 
-## ⚡ Hotkey Modes
+## ⚙️ Build & Run
 
-| Hotkey           | Behavior                                                                 |
-|------------------|--------------------------------------------------------------------------|
-| `Shift + Alt + X` | Primary hotkey (one-handed). Unfocuses current app first to avoid conflicts. |
-| `Ctrl + Numpad 7` | Secondary hotkey. Activates overlay without changing window focus.         |
+### Build `.exe`
 
-If a hotkey stops working (usually after system sleep or long uptime), **click the tray icon once** to refresh it. No need to restart the app.
+```bash
+python exe_generator.py
+```
 
----
-
-## ✨ Features
-
-- 🔹 Activate overlay with hotkey
-- 🟩 Draw transparent green rectangles on screen
-- ⎋ Press `Esc` to exit overlay
-- ↩️ Press `Ctrl + Z` to undo last rectangle
-- 🧠 Always running silently in background
-- 🟢 Green system tray icon
-- 🚀 Auto-starts with Windows
-- 📦 Self-contained `.exe` generated via `exe_generator.py`
+> 🪛 Requires Python 3.7+, PyInstaller, and dependencies listed above.
 
 ---
 
-## ⏱️ Old Version (Python + AHK)
+### Usage
 
-The original setup:
-- `.pyw` file + AutoHotKey
-- Manual startup config (`shell:startup`)
-- Required Python, PyQt5, Winget, etc.
-- **Slow startup**, especially after boot
-
----
-
-## 🚀 New Version (`.exe` with Tray Support)
-
-- One-click build via `exe_generator.py`
-- No more external dependencies
-- Adds registry key for auto-start
-- Instantly responsive tray-based background service
+- Press a hotkey → draw transparent rectangles
+- `Ctrl + Z` to undo last shape
+- `Esc` to exit overlay
+- Tray icon keeps it running
+- Click tray icon to **refresh hotkeys**
 
 ---
 
-## 🧪 Usage
+## 🧪 Quick Install via PowerShell
 
-1. **Build and install the `.exe`**
-   ```bash
-   python exe_generator.py
-   ```
-
-2. **Use the highlighter**
-   - Press hotkey → draw on screen
-   - `Esc` → exit overlay
-   - `Ctrl + Z` → undo (optional)
-   - Tray icon keeps it running
-   - Click tray icon once to refresh hotkeys if needed
-
----
-
-## ⚡ Quick Install (PowerShell)
-
-> 📌 Tip: Run this from your home folder (e.g. `C:\Users\YourName`) or root (`C:\`).
+Download and run instantly:
 
 ```powershell
 iex "& { iwr https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/raw/master/highlighter.exe -OutFile Downloads\highlighter.exe; Start-Process Downloads\highlighter.exe }"
 ```
 
----
-
-## 📹 Demo
-
-**Watch `.exe` build and usage demo:**
-
-[🔗 Video Link](https://github.com/user-attachments/assets/0e359355-a76e-46a5-8cb6-0bb98b777aa1)
-
----
-
-## 📦 Release
-
-> 🏁 **[v2.2.0 Released!](https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/releases/tag/v2.2.0)** — Fast, stable, and streamlined!
+> 📝 Tip: Run from a short path like `C:\` or your user folder to avoid long temp paths on first launch.
 
 ---
 
@@ -120,36 +118,20 @@ iex "& { iwr https://github.com/Unnamed10110/simpleHighlighter_Unnamed10110/raw/
 | File               | Description                                      |
 |--------------------|--------------------------------------------------|
 | `highlighter.pyw`  | Main logic for overlay and drawing               |
-| `exe_generator.py` | Builds `.exe`, sets up startup and tray icon     |
-| `green_dot.ico`    | Icon for tray (generated automatically)          |
+| `exe_generator.py` | Compiles `.exe`, sets registry, adds tray        |
+| `green_dot.ico`    | Tray icon (auto-generated if missing)            |
 
 ---
 
-## 🔧 Dependencies
+## 🏁 Auto Start Behavior
 
-Handled automatically via `exe_generator.py`
-
-| Dependency      | Purpose                                                  |
-|-----------------|----------------------------------------------------------|
-| `Python 3.7+`   | Minimum required version                                 |
-| `PyQt5`         | GUI: system tray, full-screen overlay, drawing, etc.     |
-| `keyboard`      | Global hotkeys                                           |
-| `Pillow`        | Generates the tray icon                                  |
-| `PyInstaller`   | Creates the standalone `.exe`                            |
-| `SetProcessDpiAwareness` / `SetProcessDPIAware` | DPI scaling fix for HiDPI displays |
-| `SetWindowPos`  | Forces overlay to stay on top                            |
-
----
-
-## 🏁 Auto Start (Registry)
-
-After installation, the app is auto-started via:
+After first run as `.exe`, this registry key is created:
 
 ```reg
-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\ScreenHighlighter
 ```
 
-Check it with PowerShell:
+Check or remove it using PowerShell:
 
 ```powershell
 Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" | Select-Object ScreenHighlighter
@@ -157,22 +139,31 @@ Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" | Select-
 
 ---
 
+## 📹 Demo
+
+Watch a quick overview of building and using the `.exe`:  
+
+[🔗 Video Link](https://github.com/user-attachments/assets/0e359355-a76e-46a5-8cb6-0bb98b777aa1)
+
+---
+
 ## 📝 Notes
 
-- Selected areas remain **interactive** (click-through)
-- `Ctrl + Z` undo is **optional**
-- You can remove `run_highlighter.ahk` if using `.exe` only
+- 🧊 Overlays are **non-blocking**, you can click through
+- 🔁 Hotkeys automatically recover on tray click
+- 📦 `.exe` contains all needed Python files inside
+- 🛑 You can safely delete `run_highlighter.ahk` (legacy)
 
 ---
 
 ## 📄 License
 
-MIT License — Free for personal and commercial use.  
-Pull requests welcome!
+**MIT License** — Free for personal and commercial use.  
+Pull requests and feedback welcome!
 
 ---
 
 ## 🙌 Credits
 
-- Inspired by: [Flameshot](https://github.com/flameshot-org/flameshot) (Linux)  
-- Developed, packaged & tray integration by [Unnamed10110](https://github.com/Unnamed10110)
+- 🔥 Inspired by: [Flameshot](https://github.com/flameshot-org/flameshot)
+- 🧑‍💻 Developed by: [Unnamed10110](https://github.com/Unnamed10110)
